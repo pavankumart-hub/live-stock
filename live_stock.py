@@ -13,41 +13,18 @@ st.set_page_config(
 # ✅ STEP 2 - Put hiding code right here
 st.markdown("""
     <style>
-        [data-testid="stToolbar"] {
-            visibility: hidden !important;
-            display: none !important;
-        }
-        [data-testid="stDecoration"] {
-            visibility: hidden !important;
-            display: none !important;
-        }
-        [data-testid="stStatusWidget"] {
-            visibility: hidden !important;
-            display: none !important;
-        }
-        .viewerBadge_container__r5tak {
-            display: none !important;
-        }
-        .viewerBadge_link__qRIco {
-            display: none !important;
-        }
-        footer {visibility: hidden !important;}
-        header {visibility: hidden !important;}
-        #MainMenu {visibility: hidden !important;}
-    </style>
-""", unsafe_allow_html=True)
-st.markdown("""
-    <style>
-        /* Hide ALL floating buttons/badges */
-        button[kind="icon"] {
-            display: none !important;
-        }
+        /* Hide bottom right Streamlit icons - 2024 class names */
+        .st-emotion-cache-zq5wmm {display: none !important;}
+        .st-emotion-cache-1dp5vir {display: none !important;}
+        .st-emotion-cache-14xtw13 {display: none !important;}
+        .st-emotion-cache-13ln4jf {display: none !important;}
         
-        [class*="viewerBadge"] {
-            display: none !important;
-        }
+        /* Hide all bottom right buttons */
+        [data-testid="stToolbar"] {display: none !important;}
+        [data-testid="stToolbarActions"] {display: none !important;}
         
-        [class*="toolbar"] {
+        /* Wildcard - catches any new class names */
+        section[data-testid="stSidebar"] ~ div > div:last-child {
             display: none !important;
         }
     </style>
