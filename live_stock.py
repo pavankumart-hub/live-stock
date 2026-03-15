@@ -18,9 +18,6 @@ now = datetime.now(IST).time()
 market_open = time(9,15)
 market_close = time(15,30)
 
-# -----------------------------
-# MARKET STATUS
-# -----------------------------
 if market_open <= now <= market_close:
     st.success("🟢 Market Open (NSE)")
 else:
@@ -96,9 +93,26 @@ st.sidebar.write("Ticker:", ticker)
 # -----------------------------
 @st.cache_data(ttl=60)
 def get_data(symbol):
-    data = yf.download(symbol, period="7d", interval="5m")
-    data = data.dropna(subset=["Close"])
-    return data
+
+    try:
+
+        data = yf.download(symbol, period="7d", interval="5m")
+
+        if data is None or data.empty:
+            return pd.DataFrame()
+
+        if isinstance(data.columns, pd.MultiIndex):
+            data.columns = data.columns.get_level_values(0)
+
+        if "Close" not in data.columns:
+            return pd.DataFrame()
+
+        data = data.dropna(subset=["Close"])
+
+        return data
+
+    except:
+        return pd.DataFrame()
 
 data = get_data(ticker)
 
@@ -120,6 +134,7 @@ if not data.empty and len(data) >= 2:
     )
 
     last_time = data.index[-1]
+
     st.caption(f"Last Market Update: {last_time}")
 
 else:
@@ -152,6 +167,7 @@ st.subheader("Latest Market News")
 try:
 
     t = yf.Ticker(ticker)
+
     news = t.news
 
     if news:
@@ -159,40 +175,52 @@ try:
         for item in news[:5]:
 
             st.markdown(f"**{item['title']}**")
+
             st.write(item["publisher"])
+
             st.write(item["link"])
+
             st.write("---")
 
     else:
         st.info("No news available")
 
 except:
+
     st.info("News unavailable")
 
 # -----------------------------
-# NIFTY GAINERS / LOSERS
+# TOP NIFTY MOVERS (FAST)
 # -----------------------------
 st.subheader("Top NIFTY Movers")
 
-prices = []
+symbols = list(stocks.values())
 
-for name, symbol in stocks.items():
+try:
 
-    d = get_data(symbol)
+    df = yf.download(symbols, period="2d", interval="1d", group_by="ticker")
 
-    if not d.empty and len(d) > 1:
+    results = []
 
-        change = d["Close"].iloc[-1] - d["Close"].iloc[0]
-        pct = change / d["Close"].iloc[0] * 100
+    for name, symbol in stocks.items():
 
-        prices.append((name, pct))
+        if symbol in df.columns.levels[0]:
 
-df = pd.DataFrame(prices, columns=["Stock","Change %"])
+            d = df[symbol]
 
-if not df.empty:
+            if len(d) >= 2:
 
-    gainers = df.sort_values("Change %", ascending=False).head(5)
-    losers = df.sort_values("Change %").head(5)
+                change = d["Close"].iloc[-1] - d["Close"].iloc[-2]
+
+                pct = change / d["Close"].iloc[-2] * 100
+
+                results.append((name, pct))
+
+    movers = pd.DataFrame(results, columns=["Stock","Change %"])
+
+    gainers = movers.sort_values("Change %", ascending=False).head(5)
+
+    losers = movers.sort_values("Change %").head(5)
 
     col1, col2 = st.columns(2)
 
@@ -202,5 +230,6 @@ if not df.empty:
     col2.subheader("Top Losers")
     col2.dataframe(losers, use_container_width=True)
 
-else:
+except:
+
     st.warning("Unable to calculate movers")
