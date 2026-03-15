@@ -131,10 +131,10 @@ data = get_data(ticker)
 if not data.empty and len(data) >= 2:
 
     latest = float(data["Close"].iloc[-1])
-    st.write(f"Latest 1Close{latest}")
+    st.write(f"Latest 1Close{latest:.2f}")
     prev = float(data["Close"].iloc[-2])
-    st.write(f"Latest 2Close{prev}")
-    st.write(item["publisher"])
+    st.write(f"Latest 2Close{prev:.2f}")
+    # st.write(item["publisher"])
 
     change = latest - prev
     pct = change / prev * 100
