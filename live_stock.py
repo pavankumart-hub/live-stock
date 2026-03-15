@@ -2,13 +2,32 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import plotly.graph_objects as go
+from datetime import datetime, time
+import pytz
 
 st.set_page_config(page_title="Market Dashboard", layout="wide")
 
 st.title("📈 Live Market Dashboard")
 
 # -----------------------------
-# STOCK LIST (NIFTY 50)
+# IST TIME
+# -----------------------------
+IST = pytz.timezone("Asia/Kolkata")
+now = datetime.now(IST).time()
+
+market_open = time(9,15)
+market_close = time(15,30)
+
+# -----------------------------
+# MARKET STATUS
+# -----------------------------
+if market_open <= now <= market_close:
+    st.success("🟢 Market Open (NSE)")
+else:
+    st.info("🔴 Market Closed — Showing Last Trading Data")
+
+# -----------------------------
+# NIFTY 50 STOCK LIST
 # -----------------------------
 stocks = {
 "Adani Enterprises": "ADANIENT.NS",
@@ -63,7 +82,7 @@ stocks = {
 }
 
 # -----------------------------
-# SIDEBAR STOCK SELECT
+# SIDEBAR
 # -----------------------------
 stock_name = st.sidebar.selectbox("Select Stock", list(stocks.keys()))
 custom = st.sidebar.text_input("Or Enter Custom Ticker")
@@ -77,16 +96,16 @@ st.sidebar.write("Ticker:", ticker)
 # -----------------------------
 @st.cache_data(ttl=60)
 def get_data(symbol):
-    return yf.download(symbol, period="3d", interval="5m")
+    data = yf.download(symbol, period="7d", interval="5m")
+    data = data.dropna(subset=["Close"])
+    return data
 
 data = get_data(ticker)
 
 # -----------------------------
 # LIVE PRICE
 # -----------------------------
-if data.empty or len(data) < 2:
-    st.error("Market data not available")
-else:
+if not data.empty and len(data) >= 2:
 
     latest = float(data["Close"].iloc[-1])
     prev = float(data["Close"].iloc[-2])
@@ -100,10 +119,18 @@ else:
         delta=f"{change:.2f} ({pct:.2f}%)"
     )
 
-    # -----------------------------
-    # CANDLESTICK CHART
-    # -----------------------------
-    st.subheader("Candlestick Chart")
+    last_time = data.index[-1]
+    st.caption(f"Last Market Update: {last_time}")
+
+else:
+    st.warning("Market data unavailable")
+
+# -----------------------------
+# CANDLESTICK CHART
+# -----------------------------
+st.subheader("Candlestick Chart")
+
+if not data.empty:
 
     fig = go.Figure(data=[go.Candlestick(
         x=data.index,
@@ -113,6 +140,8 @@ else:
         close=data["Close"]
     )])
 
+    fig.update_layout(height=500)
+
     st.plotly_chart(fig, use_container_width=True)
 
 # -----------------------------
@@ -121,20 +150,24 @@ else:
 st.subheader("Latest Market News")
 
 try:
+
     t = yf.Ticker(ticker)
     news = t.news
 
     if news:
+
         for item in news[:5]:
-            st.write(f"**{item['title']}**")
+
+            st.markdown(f"**{item['title']}**")
             st.write(item["publisher"])
             st.write(item["link"])
             st.write("---")
+
     else:
         st.info("No news available")
 
 except:
-    st.info("News not available")
+    st.info("News unavailable")
 
 # -----------------------------
 # NIFTY GAINERS / LOSERS
@@ -154,7 +187,7 @@ for name, symbol in stocks.items():
 
         prices.append((name, pct))
 
-df = pd.DataFrame(prices, columns=["Stock", "Change %"])
+df = pd.DataFrame(prices, columns=["Stock","Change %"])
 
 if not df.empty:
 
@@ -164,10 +197,10 @@ if not df.empty:
     col1, col2 = st.columns(2)
 
     col1.subheader("Top Gainers")
-    col1.dataframe(gainers)
+    col1.dataframe(gainers, use_container_width=True)
 
     col2.subheader("Top Losers")
-    col2.dataframe(losers)
+    col2.dataframe(losers, use_container_width=True)
 
 else:
     st.warning("Unable to calculate movers")
