@@ -8,7 +8,7 @@ import pytz
 st.set_page_config(page_title="Market Dashboard", layout="wide")
 
 # AUTO REFRESH EVERY 15 SECONDS
-st.autorefresh(interval=15000)
+# st.autorefresh(interval=15000)
 
 st.title("📈 Live Market Dashboard")
 
