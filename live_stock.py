@@ -7,18 +7,24 @@ import pytz
 
 st.set_page_config(page_title="Market Dashboard", layout="wide")
 
+# AUTO REFRESH EVERY 15 SECONDS
+st.autorefresh(interval=15000)
+
 st.title("📈 Live Market Dashboard")
 
 # -----------------------------
 # IST TIME
 # -----------------------------
 IST = pytz.timezone("Asia/Kolkata")
-now = datetime.now(IST).time()
+now = datetime.now(IST)
+current_time = now.time()
 
 market_open = time(9,15)
 market_close = time(15,30)
 
-if market_open <= now <= market_close:
+st.write("Current IST Time:", now.strftime("%d %b %Y %H:%M:%S"))
+
+if market_open <= current_time <= market_close:
     st.success("🟢 Market Open (NSE)")
 else:
     st.info("🔴 Market Closed — Showing Last Trading Data")
@@ -91,7 +97,7 @@ st.sidebar.write("Ticker:", ticker)
 # -----------------------------
 # FETCH DATA
 # -----------------------------
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=15)
 def get_data(symbol):
 
     try:
@@ -104,8 +110,11 @@ def get_data(symbol):
         if isinstance(data.columns, pd.MultiIndex):
             data.columns = data.columns.get_level_values(0)
 
-        if "Close" not in data.columns:
-            return pd.DataFrame()
+        # Convert to IST
+        if data.index.tz is None:
+            data.index = data.index.tz_localize("UTC")
+
+        data.index = data.index.tz_convert("Asia/Kolkata")
 
         data = data.dropna(subset=["Close"])
 
@@ -133,7 +142,7 @@ if not data.empty and len(data) >= 2:
         delta=f"{change:.2f} ({pct:.2f}%)"
     )
 
-    last_time = data.index[-1]
+    last_time = data.index[-1].strftime("%d %b %Y %H:%M IST")
 
     st.caption(f"Last Market Update: {last_time}")
 
@@ -141,16 +150,14 @@ else:
     st.warning("Market data unavailable")
 
 # -----------------------------
-# CANDLESTICK CHART (ONLY ONE DAY)
+# CANDLESTICK CHART (ONE DAY)
 # -----------------------------
 st.subheader("Candlestick Chart")
 
 if not data.empty:
 
-    # Get latest trading date
     last_day = data.index.date[-1]
 
-    # Filter only that day's data
     day_data = data[data.index.date == last_day]
 
     fig = go.Figure()
@@ -179,7 +186,6 @@ st.subheader("Latest Market News")
 try:
 
     t = yf.Ticker(ticker)
-
     news = t.news
 
     if news:
@@ -199,7 +205,7 @@ except:
     st.info("News unavailable")
 
 # -----------------------------
-# TOP NIFTY MOVERS (FAST)
+# TOP NIFTY MOVERS
 # -----------------------------
 st.subheader("Top NIFTY Movers")
 
