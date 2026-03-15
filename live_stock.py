@@ -5,7 +5,22 @@ import plotly.graph_objects as go
 from datetime import datetime, time
 import pytz
 
-st.set_page_config(page_title="Market Dashboard", layout="wide")
+st.set_page_config(
+    page_title="Livestock Sector Future",  # Your app name
+    page_icon="🌿",
+    layout="wide"
+)
+
+# Hide all Streamlit branding
+hide_streamlit_style = """
+    <style>
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        .stDeployButton {display: none;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # AUTO REFRESH EVERY 15 SECONDS
 # st.autorefresh(interval=15000)
