@@ -82,7 +82,7 @@ st.sidebar.write("Ticker:", ticker)
 # -----------------------------
 # FETCH DATA
 # -----------------------------
-data = yf.download(ticker, period="1d", interval="5m")
+data = yf.download(ticker, period="3d", interval="5m")
 
 # -----------------------------
 # LIVE PRICE
