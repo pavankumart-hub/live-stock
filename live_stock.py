@@ -79,7 +79,7 @@ stocks = {
 }
 
 # -----------------------------
-# SIDEBAR
+# SIDEBAR STOCK SELECT
 # -----------------------------
 stock_name = st.sidebar.selectbox("Select Stock", list(stocks.keys()))
 custom = st.sidebar.text_input("Or Enter Custom Ticker")
@@ -141,21 +141,33 @@ else:
     st.warning("Market data unavailable")
 
 # -----------------------------
-# CANDLESTICK CHART
+# CANDLESTICK CHART (ONLY ONE DAY)
 # -----------------------------
 st.subheader("Candlestick Chart")
 
 if not data.empty:
 
-    fig = go.Figure(data=[go.Candlestick(
-        x=data.index,
-        open=data["Open"],
-        high=data["High"],
-        low=data["Low"],
-        close=data["Close"]
-    )])
+    # Get latest trading date
+    last_day = data.index.date[-1]
 
-    fig.update_layout(height=500)
+    # Filter only that day's data
+    day_data = data[data.index.date == last_day]
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Candlestick(
+        x=day_data.index,
+        open=day_data["Open"],
+        high=day_data["High"],
+        low=day_data["Low"],
+        close=day_data["Close"]
+    ))
+
+    fig.update_layout(
+        title=f"{ticker} Intraday Chart",
+        height=500,
+        xaxis_rangeslider_visible=False
+    )
 
     st.plotly_chart(fig, use_container_width=True)
 
@@ -175,11 +187,8 @@ try:
         for item in news[:5]:
 
             st.markdown(f"**{item['title']}**")
-
             st.write(item["publisher"])
-
             st.write(item["link"])
-
             st.write("---")
 
     else:
@@ -211,7 +220,6 @@ try:
             if len(d) >= 2:
 
                 change = d["Close"].iloc[-1] - d["Close"].iloc[-2]
-
                 pct = change / d["Close"].iloc[-2] * 100
 
                 results.append((name, pct))
@@ -219,7 +227,6 @@ try:
     movers = pd.DataFrame(results, columns=["Stock","Change %"])
 
     gainers = movers.sort_values("Change %", ascending=False).head(5)
-
     losers = movers.sort_values("Change %").head(5)
 
     col1, col2 = st.columns(2)
