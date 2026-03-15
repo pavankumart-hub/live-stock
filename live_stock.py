@@ -36,7 +36,22 @@ st.markdown("""
         #MainMenu {visibility: hidden !important;}
     </style>
 """, unsafe_allow_html=True)
-
+st.markdown("""
+    <style>
+        /* Hide ALL floating buttons/badges */
+        button[kind="icon"] {
+            display: none !important;
+        }
+        
+        [class*="viewerBadge"] {
+            display: none !important;
+        }
+        
+        [class*="toolbar"] {
+            display: none !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
 # ✅ STEP 3 - Your actual app code starts here
 # rest of your code...
 # Hide all Streamlit branding
