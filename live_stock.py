@@ -131,7 +131,10 @@ data = get_data(ticker)
 if not data.empty and len(data) >= 2:
 
     latest = float(data["Close"].iloc[-1])
+    st.write(f"Latest 1Close{latest}")
     prev = float(data["Close"].iloc[-2])
+    st.write(f"Latest 2Close{prev}")
+    st.write(item["publisher"])
 
     change = latest - prev
     pct = change / prev * 100
@@ -213,7 +216,7 @@ symbols = list(stocks.values())
 
 try:
 
-    df = yf.download(symbols, period="2d", interval="1d", group_by="ticker")
+    df = yf.download(symbols, period="3d", interval="1d", group_by="ticker")
 
     results = []
 
