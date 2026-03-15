@@ -10,7 +10,35 @@ st.set_page_config(
     page_icon="🌿",
     layout="wide"
 )
+# ✅ STEP 2 - Put hiding code right here
+st.markdown("""
+    <style>
+        [data-testid="stToolbar"] {
+            visibility: hidden !important;
+            display: none !important;
+        }
+        [data-testid="stDecoration"] {
+            visibility: hidden !important;
+            display: none !important;
+        }
+        [data-testid="stStatusWidget"] {
+            visibility: hidden !important;
+            display: none !important;
+        }
+        .viewerBadge_container__r5tak {
+            display: none !important;
+        }
+        .viewerBadge_link__qRIco {
+            display: none !important;
+        }
+        footer {visibility: hidden !important;}
+        header {visibility: hidden !important;}
+        #MainMenu {visibility: hidden !important;}
+    </style>
+""", unsafe_allow_html=True)
 
+# ✅ STEP 3 - Your actual app code starts here
+# rest of your code...
 # Hide all Streamlit branding
 hide_streamlit_style = """
     <style>
