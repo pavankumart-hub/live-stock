@@ -10,7 +10,7 @@ st.set_page_config(page_title="Market Dashboard", layout="wide")
 # AUTO REFRESH EVERY 15 SECONDS
 # st.autorefresh(interval=15000)
 
-st.title("📈 Live Market Dashboard")
+# st.title("📈 Live Market Dashboard")
 
 # -----------------------------
 # IST TIME
@@ -131,9 +131,9 @@ data1= get_data(ticker,interval="1d")
 if not data1.empty and len(data) >= 2:
 
     latest = float(data1["Close"].iloc[-1])
-    st.write(f"Latest 1Close{latest:.2f}")
+    # st.write(f"Latest 1Close{latest:.2f}")
     prev = float(data1["Close"].iloc[-2])
-    st.write(f"Latest 2Close{prev:.2f}")
+    # st.write(f"Latest 2Close{prev:.2f}")
     # st.write(item["publisher"])
 
     change = latest - prev
@@ -155,7 +155,7 @@ else:
 # -----------------------------
 # CANDLESTICK CHART (ONE DAY)
 # -----------------------------
-st.subheader("Candlestick Chart")
+# st.subheader("Candlestick Chart")
 
 if not data.empty:
 
