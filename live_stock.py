@@ -98,11 +98,11 @@ st.sidebar.write("Ticker:", ticker)
 # FETCH DATA
 # -----------------------------
 @st.cache_data(ttl=15)
-def get_data(symbol):
+def get_data(symbol,interval):
 
     try:
 
-        data = yf.download(symbol, period="7d", interval="5m")
+        data = yf.download(symbol, period="7d",interval=interval)
 
         if data is None or data.empty:
             return pd.DataFrame()
@@ -123,34 +123,34 @@ def get_data(symbol):
     except:
         return pd.DataFrame()
 
-data = get_data(ticker)
-
+data = get_data(ticker,interval="5m")
+data1= get_data(ticker,interval="1d")
 # -----------------------------
 # LIVE PRICE
 # -----------------------------
-# if not data.empty and len(data) >= 2:
+if not data1.empty and len(data) >= 2:
 
-#     latest = float(data["Close"].iloc[-1])
-#     st.write(f"Latest 1Close{latest:.2f}")
-#     prev = float(data["Close"].iloc[-2])
-#     st.write(f"Latest 2Close{prev:.2f}")
-#     # st.write(item["publisher"])
+    latest = float(data1["Close"].iloc[-1])
+    st.write(f"Latest 1Close{latest:.2f}")
+    prev = float(data1["Close"].iloc[-2])
+    st.write(f"Latest 2Close{prev:.2f}")
+    # st.write(item["publisher"])
 
-#     change = latest - prev
-#     pct = change / prev * 100
+    change = latest - prev
+    pct = change / prev * 100
 
-#     st.metric(
-#         label=f"{ticker} Price",
-#         value=f"{latest:.2f}",
-#         delta=f"{change:.2f} ({pct:.2f}%)"
-#     )
+    st.metric(
+        label=f"{ticker} Price",
+        value=f"{latest:.2f}",
+        delta=f"{change:.2f} ({pct:.2f}%)"
+    )
 
-#     last_time = data.index[-1].strftime("%d %b %Y %H:%M IST")
+    last_time = data1.index[-1].strftime("%d %b %Y %H:%M IST")
 
-#     st.caption(f"Last Market Update: {last_time}")
+    st.caption(f"Last Market Update: {last_time}")
 
-# else:
-#     st.warning("Market data unavailable")
+else:
+    st.warning("Market data unavailable")
 
 # -----------------------------
 # CANDLESTICK CHART (ONE DAY)
