@@ -5,42 +5,42 @@ import plotly.graph_objects as go
 from datetime import datetime, time
 import pytz
 
-st.set_page_config(
-    page_title="Livestock Sector Future",  # Your app name
-    page_icon="🌿",
-    layout="wide"
-)
-# ✅ STEP 2 - Put hiding code right here
-st.markdown("""
-    <style>
-        /* Hide bottom right Streamlit icons - 2024 class names */
-        .st-emotion-cache-zq5wmm {display: none !important;}
-        .st-emotion-cache-1dp5vir {display: none !important;}
-        .st-emotion-cache-14xtw13 {display: none !important;}
-        .st-emotion-cache-13ln4jf {display: none !important;}
+# st.set_page_config(
+#     page_title="Livestock Sector Future",  # Your app name
+#     page_icon="🌿",
+#     layout="wide"
+# )
+# # ✅ STEP 2 - Put hiding code right here
+# st.markdown("""
+#     <style>
+#         /* Hide bottom right Streamlit icons - 2024 class names */
+#         .st-emotion-cache-zq5wmm {display: none !important;}
+#         .st-emotion-cache-1dp5vir {display: none !important;}
+#         .st-emotion-cache-14xtw13 {display: none !important;}
+#         .st-emotion-cache-13ln4jf {display: none !important;}
         
-        /* Hide all bottom right buttons */
-        [data-testid="stToolbar"] {display: none !important;}
-        [data-testid="stToolbarActions"] {display: none !important;}
+#         /* Hide all bottom right buttons */
+#         [data-testid="stToolbar"] {display: none !important;}
+#         [data-testid="stToolbarActions"] {display: none !important;}
         
-        /* Wildcard - catches any new class names */
-        section[data-testid="stSidebar"] ~ div > div:last-child {
-            display: none !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
-# ✅ STEP 3 - Your actual app code starts here
-# rest of your code...
-# Hide all Streamlit branding
-hide_streamlit_style = """
-    <style>
-        #MainMenu {visibility: hidden;}
-        header {visibility: hidden;}
-        footer {visibility: hidden;}
-        .stDeployButton {display: none;}
-    </style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+#         /* Wildcard - catches any new class names */
+#         section[data-testid="stSidebar"] ~ div > div:last-child {
+#             display: none !important;
+#         }
+#     </style>
+# """, unsafe_allow_html=True)
+# # ✅ STEP 3 - Your actual app code starts here
+# # rest of your code...
+# # Hide all Streamlit branding
+# hide_streamlit_style = """
+#     <style>
+#         #MainMenu {visibility: hidden;}
+#         header {visibility: hidden;}
+#         footer {visibility: hidden;}
+#         .stDeployButton {display: none;}
+#     </style>
+# """
+# st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # AUTO REFRESH EVERY 15 SECONDS
 # st.autorefresh(interval=15000)
