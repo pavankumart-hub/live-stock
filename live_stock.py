@@ -256,45 +256,45 @@ except:
 
     st.info("News unavailable")
 
-# -----------------------------
-# TOP NIFTY MOVERS
-# -----------------------------
-st.subheader("Top NIFTY Movers")
+# # -----------------------------
+# # TOP NIFTY MOVERS
+# # -----------------------------
+# st.subheader("Top NIFTY Movers")
 
-symbols = list(stocks.values())
+# symbols = list(stocks.values())
 
-try:
+# try:
 
-    df = yf.download(symbols, period="3d", interval="1d", group_by="ticker")
+#     df = yf.download(symbols, period="3d", interval="1d", group_by="ticker")
 
-    results = []
+#     results = []
 
-    for name, symbol in stocks.items():
+#     for name, symbol in stocks.items():
 
-        if symbol in df.columns.levels[0]:
+#         if symbol in df.columns.levels[0]:
 
-            d = df[symbol]
+#             d = df[symbol]
 
-            if len(d) >= 2:
+#             if len(d) >= 2:
 
-                change = d["Close"].iloc[-1] - d["Close"].iloc[-2]
-                pct = change / d["Close"].iloc[-2] * 100
+#                 change = d["Close"].iloc[-1] - d["Close"].iloc[-2]
+#                 pct = change / d["Close"].iloc[-2] * 100
 
-                results.append((name, pct))
+#                 results.append((name, pct))
 
-    movers = pd.DataFrame(results, columns=["Stock","Change %"])
+#     movers = pd.DataFrame(results, columns=["Stock","Change %"])
 
-    gainers = movers.sort_values("Change %", ascending=False).head(5)
-    losers = movers.sort_values("Change %").head(5)
+#     gainers = movers.sort_values("Change %", ascending=False).head(5)
+#     losers = movers.sort_values("Change %").head(5)
 
-    col1, col2 = st.columns(2)
+#     col1, col2 = st.columns(2)
 
-    col1.subheader("Top Gainers")
-    col1.dataframe(gainers, use_container_width=True)
+#     col1.subheader("Top Gainers")
+#     col1.dataframe(gainers, use_container_width=True)
 
-    col2.subheader("Top Losers")
-    col2.dataframe(losers, use_container_width=True)
+#     col2.subheader("Top Losers")
+#     col2.dataframe(losers, use_container_width=True)
 
-except:
+# except:
 
-    st.warning("Unable to calculate movers")
+#     st.warning("Unable to calculate movers")
