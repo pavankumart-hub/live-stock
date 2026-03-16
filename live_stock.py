@@ -224,7 +224,7 @@ if not data.empty:
 
     fig.update_layout(
         # title=f"{ticker} Intraday Chart",
-        height=800,
+        height=400,
         xaxis_rangeslider_visible=False
     )
 
