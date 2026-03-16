@@ -173,19 +173,33 @@ if not data1.empty and len(data) >= 2:
 
     change = latest - prev
     pct = change / prev * 100
+    col1, col2 = st.columns([2,1])
 
+with col1:
     st.metric(
         label=f"{ticker} Price",
         value=f"{latest:.2f}",
         delta=f"{change:.2f} ({pct:.2f}%)"
     )
 
+with col2:
     last_time = data1.index[-1].strftime("%d %b %Y %H:%M IST")
+    st.caption(f"Last Update\n{last_time}")
 
-    st.caption(f"Last Market Update: {last_time}")
-
-else:
+if data1.empty:
     st.warning("Market data unavailable")
+#     st.metric(
+#         label=f"{ticker} Price",
+#         value=f"{latest:.2f}",
+#         delta=f"{change:.2f} ({pct:.2f}%)"
+#     )
+
+#     last_time = data1.index[-1].strftime("%d %b %Y %H:%M IST")
+
+#     st.caption(f"Last Market Update: {last_time}")
+
+# else:
+#     st.warning("Market data unavailable")
 
 # -----------------------------
 # CANDLESTICK CHART (ONE DAY)
